@@ -1,0 +1,207 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Plain GraphQL API",
+    "version": "v1"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Customers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Customer by Email",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core-api.uk.plain.com/graphql/v1",
+            "headers": [
+              { "name": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"query ($email: String!) { customerByEmail(email: $email) { id fullName email { email isVerified } } }\",\"variables\":{\"email\":\"ada@example.com\"}}"
+            }
+          },
+          "docs": "Fetch a single customer by email address."
+        },
+        {
+          "info": {
+            "name": "Upsert Customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core-api.uk.plain.com/graphql/v1",
+            "headers": [
+              { "name": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"mutation ($input: UpsertCustomerInput!) { upsertCustomer(input: $input) { result customer { id fullName } error { message type code } } }\",\"variables\":{\"input\":{\"identifier\":{\"emailAddress\":\"ada@example.com\"},\"onCreate\":{\"fullName\":\"Ada Lovelace\",\"email\":{\"email\":\"ada@example.com\",\"isVerified\":true}},\"onUpdate\":{\"fullName\":{\"value\":\"Ada Lovelace\"}}}}}"
+            }
+          },
+          "docs": "Idempotently create or update a customer."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Threads",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create Thread",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core-api.uk.plain.com/graphql/v1",
+            "headers": [
+              { "name": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"mutation ($input: CreateThreadInput!) { createThread(input: $input) { thread { id title status } error { message type code } } }\",\"variables\":{\"input\":{\"customerIdentifier\":{\"emailAddress\":\"ada@example.com\"},\"title\":\"Cannot reset password\",\"components\":[{\"componentText\":{\"text\":\"I am locked out of my account.\"}}]}}}"
+            }
+          },
+          "docs": "Open a new support thread for a customer."
+        },
+        {
+          "info": {
+            "name": "Change Thread Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core-api.uk.plain.com/graphql/v1",
+            "headers": [
+              { "name": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"mutation ($input: ChangeThreadStatusInput!) { changeThreadStatus(input: $input) { thread { id status } error { message type code } } }\",\"variables\":{\"input\":{\"threadId\":\"th_01HXXXXXXXXXXXXXXXXXXXXXXX\",\"status\":\"DONE\"}}}"
+            }
+          },
+          "docs": "Move a thread between TODO / SNOOZED / DONE."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Messages",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Reply to Thread",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core-api.uk.plain.com/graphql/v1",
+            "headers": [
+              { "name": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"mutation ($input: ReplyToThreadInput!) { replyToThread(input: $input) { thread { id } error { message type code } } }\",\"variables\":{\"input\":{\"threadId\":\"th_01HXXXXXXXXXXXXXXXXXXXXXXX\",\"textContent\":\"We have sent you a password reset link.\"}}}"
+            }
+          },
+          "docs": "Append a reply delivered to the customer over their channel."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Timeline & Events",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create Thread Event",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core-api.uk.plain.com/graphql/v1",
+            "headers": [
+              { "name": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"mutation ($input: CreateThreadEventInput!) { createThreadEvent(input: $input) { threadEvent { id title timestamp { iso8601 } } error { message type code } } }\",\"variables\":{\"input\":{\"threadId\":\"th_01HXXXXXXXXXXXXXXXXXXXXXXX\",\"title\":\"Payment received\"}}}"
+            }
+          },
+          "docs": "Append a custom event to a thread's timeline."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Labels & Tiers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Add Labels",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core-api.uk.plain.com/graphql/v1",
+            "headers": [
+              { "name": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"mutation ($input: AddLabelsInput!) { addLabels(input: $input) { labels { id labelType { name } } error { message type code } } }\",\"variables\":{\"input\":{\"threadId\":\"th_01HXXXXXXXXXXXXXXXXXXXXXXX\",\"labelTypeIds\":[\"lt_01HXXXXXXXXXXXXXXXXXXXXXXX\"]}}}"
+            }
+          },
+          "docs": "Add labels to a thread."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Webhooks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create Webhook Target",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core-api.uk.plain.com/graphql/v1",
+            "headers": [
+              { "name": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"mutation ($input: CreateWebhookTargetInput!) { createWebhookTarget(input: $input) { webhookTarget { id url eventSubscriptions { eventType } } error { message type code } } }\",\"variables\":{\"input\":{\"url\":\"https://example.com/plain/webhooks\",\"eventSubscriptions\":[\"thread.thread_status_transitioned\",\"customer.customer_created\"],\"isEnabled\":true}}}"
+            }
+          },
+          "docs": "Create an outbound webhook target with event subscriptions."
+        }
+      ]
+    }
+  ]
+}

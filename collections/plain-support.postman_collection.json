@@ -1,0 +1,171 @@
+{
+  "info": {
+    "name": "Plain GraphQL API",
+    "description": "Plain is an API-first customer support platform with a single GraphQL endpoint (POST https://core-api.uk.plain.com/graphql/v1). All operations - customers, threads, timeline, messages, labels, tiers, webhooks - are GraphQL queries and mutations authenticated with a Bearer API key (plainApiKey_xxx).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{PLAIN_API_KEY}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://core-api.uk.plain.com/graphql/v1"
+    },
+    {
+      "key": "PLAIN_API_KEY",
+      "value": "plainApiKey_xxx"
+    }
+  ],
+  "item": [
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "Customer by Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query ($email: String!) { customerByEmail(email: $email) { id fullName email { email isVerified } } }\",\n  \"variables\": { \"email\": \"ada@example.com\" }\n}"
+            }
+          }
+        },
+        {
+          "name": "Upsert Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation ($input: UpsertCustomerInput!) { upsertCustomer(input: $input) { result customer { id fullName } error { message type code } } }\",\n  \"variables\": { \"input\": { \"identifier\": { \"emailAddress\": \"ada@example.com\" }, \"onCreate\": { \"fullName\": \"Ada Lovelace\", \"email\": { \"email\": \"ada@example.com\", \"isVerified\": true } }, \"onUpdate\": { \"fullName\": { \"value\": \"Ada Lovelace\" } } } }\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Threads",
+      "item": [
+        {
+          "name": "Create Thread",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation ($input: CreateThreadInput!) { createThread(input: $input) { thread { id title status } error { message type code } } }\",\n  \"variables\": { \"input\": { \"customerIdentifier\": { \"emailAddress\": \"ada@example.com\" }, \"title\": \"Cannot reset password\", \"components\": [ { \"componentText\": { \"text\": \"I am locked out of my account.\" } } ] } }\n}"
+            }
+          }
+        },
+        {
+          "name": "Change Thread Status",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation ($input: ChangeThreadStatusInput!) { changeThreadStatus(input: $input) { thread { id status } error { message type code } } }\",\n  \"variables\": { \"input\": { \"threadId\": \"th_01HXXXXXXXXXXXXXXXXXXXXXXX\", \"status\": \"DONE\" } }\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "item": [
+        {
+          "name": "Reply to Thread",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation ($input: ReplyToThreadInput!) { replyToThread(input: $input) { thread { id } error { message type code } } }\",\n  \"variables\": { \"input\": { \"threadId\": \"th_01HXXXXXXXXXXXXXXXXXXXXXXX\", \"textContent\": \"We have sent you a password reset link.\" } }\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Timeline & Events",
+      "item": [
+        {
+          "name": "Create Thread Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation ($input: CreateThreadEventInput!) { createThreadEvent(input: $input) { threadEvent { id title timestamp { iso8601 } } error { message type code } } }\",\n  \"variables\": { \"input\": { \"threadId\": \"th_01HXXXXXXXXXXXXXXXXXXXXXXX\", \"title\": \"Payment received\" } }\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Labels & Tiers",
+      "item": [
+        {
+          "name": "Add Labels",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation ($input: AddLabelsInput!) { addLabels(input: $input) { labels { id labelType { name } } error { message type code } } }\",\n  \"variables\": { \"input\": { \"threadId\": \"th_01HXXXXXXXXXXXXXXXXXXXXXXX\", \"labelTypeIds\": [ \"lt_01HXXXXXXXXXXXXXXXXXXXXXXX\" ] } }\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Webhooks",
+      "item": [
+        {
+          "name": "Create Webhook Target",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation ($input: CreateWebhookTargetInput!) { createWebhookTarget(input: $input) { webhookTarget { id url eventSubscriptions { eventType } } error { message type code } } }\",\n  \"variables\": { \"input\": { \"url\": \"https://example.com/plain/webhooks\", \"eventSubscriptions\": [ \"thread.thread_status_transitioned\", \"customer.customer_created\" ], \"isEnabled\": true } }\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

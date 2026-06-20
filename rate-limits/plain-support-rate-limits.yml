@@ -1,0 +1,57 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Plain
+providerId: plain-support
+created: '2026-06-20'
+modified: '2026-06-20'
+reconciled: false
+tags:
+- Customer Support
+- Help Desk
+- GraphQL
+- API First
+- Rate Limiting
+- Quotas
+- Throttling
+description: >-
+  Plain enforces rate limits on its GraphQL API at the workspace / API key
+  level. Limits are applied per Machine User API key and are expressed as
+  requests per unit time against the single POST /graphql/v1 endpoint;
+  exceeding them returns an error (HTTP 429 / a RATE_LIMITED mutation error).
+  Specific numeric thresholds are not published as fixed public values and are
+  not reconciled in this artifact - confirm current limits with Plain.
+notes: >-
+  Plain does not publish a fixed numeric public rate-limit table; limits can
+  vary by workspace and plan. Verify against Plain's documentation and your
+  workspace settings on reconciliation. Clients should batch where possible and
+  honor backoff on 429 / RATE_LIMITED responses.
+sources:
+- https://www.plain.com/docs/api-reference/graphql/introduction
+- https://www.plain.com/docs
+responseCodes:
+  throttled: 429
+limits:
+- name: GraphQL Requests
+  scope: api_key
+  metric: requests
+  limit: see provider documentation
+  notes: Per API key (Machine User) against POST /graphql/v1; varies by workspace and plan.
+- name: Mutation Operations
+  scope: api_key
+  metric: mutations
+  limit: see provider documentation
+  notes: Write operations (upsertCustomer, createThread, replyToThread, etc.) are rate limited per key.
+- name: Webhook Deliveries
+  scope: workspace
+  metric: deliveries
+  limit: see provider documentation
+  notes: Outbound webhook delivery attempts; failed deliveries are retried and inspectable.
+policies:
+- name: Tiered / Workspace Limits
+  description: Limits are applied per API key and may vary by workspace and plan; contact Plain to raise them.
+- name: Backoff Strategy
+  description: Clients should implement exponential backoff with jitter on HTTP 429 and RATE_LIMITED mutation errors.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,97 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: Plain
+providerId: plain-support
+created: '2026-06-20'
+modified: '2026-06-20'
+reconciled: true
+tags:
+- Customer Support
+- Help Desk
+- GraphQL
+- API First
+- FinOps
+- Cost Management
+- FOCUS
+description: >-
+  FinOps view of Plain spend. Plain bills a per-seat subscription per plan
+  (Foundation, Horizon, Frontier) with a bundled monthly credit allowance that
+  AI features and workflows draw down. The GraphQL API is included with every
+  plan and is not separately metered, so API-driven automation reduces the
+  per-seat headcount needed rather than adding usage charges - the main cost
+  levers are seat count, plan tier, and credit consumption.
+notes: >-
+  Per-seat prices and credit allowances are subject to change; verify against
+  the Plain pricing page during reconciliation. The API itself is bundled, not
+  usage-priced.
+sources:
+- https://www.plain.com/pricing
+- https://www.plain.com/docs
+- https://focus.finops.org/focus-specification/v1-3/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: Plain
+serviceCategory: Customer Support and Engagement
+billingModel:
+  pricingCategory: Subscription-Based
+  billingFrequency: Monthly
+  billingCurrency: USD
+  chargeCategories:
+  - Usage
+  - Purchase
+  - Adjustment
+focusColumns:
+  ServiceName: Plain
+  ServiceCategory: Customer Support and Engagement
+  ProviderName: Plain
+  PublisherName: Plain
+  InvoiceIssuerName: Plain
+  BillingCurrency: USD
+  ChargeCategory: Purchase
+  PricingCategory: Subscription-Based
+meters:
+- name: seats
+  description: Billable seats (agents / users) per plan, billed per seat per month.
+  unit: seats
+  aggregation: sum
+  dimensions:
+  - workspace
+  - plan
+- name: plan_subscription
+  description: Base plan subscription (e.g. Horizon base includes 3 seats).
+  unit: subscriptions
+  aggregation: sum
+  dimensions:
+  - workspace
+  - plan
+- name: credits
+  description: Monthly credits consumed by AI features (Ari agent, AI workflows, suggested responses).
+  unit: credits
+  aggregation: sum
+  dimensions:
+  - workspace
+  - feature
+- name: additional_seats
+  description: Seats beyond a plan's bundled allotment, billed per additional seat.
+  unit: seats
+  aggregation: sum
+  dimensions:
+  - workspace
+  - plan
+principles:
+- name: Visibility
+  description: Track seat count, plan tier, and monthly credit burn per workspace; the GraphQL API is bundled, not metered.
+- name: Allocation
+  description: Map seats and workspaces to teams / cost centers; tag automations by the API key (Machine User) that drives them.
+- name: Optimization
+  description: Use the GraphQL API to automate routine support work and reduce required seats; right-size the plan to credit usage; consolidate Machine Users.
+- name: Accountability
+  description: Assign an owner per workspace; review seat count and credit consumption monthly against budget before renewal.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

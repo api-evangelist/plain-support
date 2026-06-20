@@ -1,0 +1,527 @@
+# Plain GraphQL API - representative schema (SUBSET)
+#
+# This is a hand-authored, documented subset of Plain's GraphQL schema for catalog
+# reference. It captures the main types, queries, and mutations described in the
+# public API reference (https://www.plain.com/docs/api-reference/graphql/introduction)
+# and the @team-plain/graphql SDK. It is NOT the full generated schema - fetch the
+# live schema from Plain's API explorer for the complete, authoritative definition.
+
+scalar DateTime
+scalar ISO8601DateTime
+scalar JSON
+
+# ---------------------------------------------------------------------------
+# Scalars / shared
+# ---------------------------------------------------------------------------
+
+type DateTimePartsOutput {
+  iso8601: ISO8601DateTime!
+  unixTimestamp: String!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+"""Typed error returned in the `error` field of every mutation output."""
+type MutationError {
+  message: String!
+  type: MutationErrorType!
+  code: String!
+  fields: [MutationFieldError!]!
+}
+
+type MutationFieldError {
+  field: String!
+  message: String!
+  type: String!
+}
+
+enum MutationErrorType {
+  VALIDATION
+  FORBIDDEN
+  NOT_FOUND
+  INTERNAL
+  RATE_LIMITED
+}
+
+enum UpsertResult {
+  CREATED
+  UPDATED
+  NOOP
+}
+
+# ---------------------------------------------------------------------------
+# Customers
+# ---------------------------------------------------------------------------
+
+type Customer {
+  id: ID!
+  externalId: String
+  fullName: String!
+  shortName: String
+  email: EmailAddress!
+  status: CustomerStatus!
+  markedAsSpamAt: DateTimePartsOutput
+  createdAt: DateTimePartsOutput!
+  updatedAt: DateTimePartsOutput!
+}
+
+type EmailAddress {
+  email: String!
+  isVerified: Boolean!
+}
+
+enum CustomerStatus {
+  ACTIVE
+  DELETED
+}
+
+type CustomerConnection {
+  edges: [CustomerEdge!]!
+  pageInfo: PageInfo!
+}
+
+type CustomerEdge {
+  node: Customer!
+  cursor: String!
+}
+
+input CustomerIdentifierInput {
+  customerId: ID
+  externalId: String
+  emailAddress: String
+}
+
+input EmailAddressInput {
+  email: String!
+  isVerified: Boolean!
+}
+
+input UpsertCustomerOnCreateInput {
+  externalId: String
+  fullName: String!
+  shortName: String
+  email: EmailAddressInput!
+}
+
+input OptionalStringInput {
+  value: String
+}
+
+input UpsertCustomerOnUpdateInput {
+  fullName: OptionalStringInput
+  shortName: OptionalStringInput
+  email: EmailAddressInput
+}
+
+input UpsertCustomerInput {
+  identifier: CustomerIdentifierInput!
+  onCreate: UpsertCustomerOnCreateInput!
+  onUpdate: UpsertCustomerOnUpdateInput!
+}
+
+type UpsertCustomerOutput {
+  result: UpsertResult
+  customer: Customer
+  error: MutationError
+}
+
+input DeleteCustomerInput {
+  customerId: ID!
+}
+
+type DeleteCustomerOutput {
+  error: MutationError
+}
+
+input MarkCustomerAsSpamInput {
+  customerId: ID!
+  reason: String
+}
+
+type MarkCustomerAsSpamOutput {
+  customer: Customer
+  error: MutationError
+}
+
+# ---------------------------------------------------------------------------
+# Threads
+# ---------------------------------------------------------------------------
+
+enum ThreadStatus {
+  TODO
+  SNOOZED
+  DONE
+}
+
+enum ThreadPriority {
+  URGENT
+  HIGH
+  NORMAL
+  LOW
+}
+
+type Thread {
+  id: ID!
+  externalId: String
+  title: String
+  description: String
+  status: ThreadStatus!
+  statusChangedAt: DateTimePartsOutput
+  priority: Int
+  customer: Customer!
+  assignedTo: Actor
+  labels: [Label!]!
+  createdAt: DateTimePartsOutput!
+  updatedAt: DateTimePartsOutput!
+}
+
+type ThreadConnection {
+  edges: [ThreadEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ThreadEdge {
+  node: Thread!
+  cursor: String!
+}
+
+union Actor = UserActor | MachineUserActor | SystemActor
+
+type UserActor {
+  userId: ID!
+  fullName: String!
+}
+
+type MachineUserActor {
+  machineUserId: ID!
+  fullName: String!
+}
+
+type SystemActor {
+  systemId: ID!
+}
+
+input ComponentTextInput {
+  text: String!
+}
+
+input ComponentInput {
+  componentText: ComponentTextInput
+}
+
+input CreateThreadInput {
+  customerIdentifier: CustomerIdentifierInput!
+  title: String
+  externalId: String
+  labelTypeIds: [ID!]
+  components: [ComponentInput!]!
+}
+
+type CreateThreadOutput {
+  thread: Thread
+  error: MutationError
+}
+
+input UpdateThreadInput {
+  threadId: ID!
+  title: OptionalStringInput
+  priority: Int
+}
+
+type UpdateThreadOutput {
+  thread: Thread
+  error: MutationError
+}
+
+input ChangeThreadStatusInput {
+  threadId: ID!
+  status: ThreadStatus!
+}
+
+type ChangeThreadStatusOutput {
+  thread: Thread
+  error: MutationError
+}
+
+input AssignThreadInput {
+  threadId: ID!
+  userId: ID
+  machineUserId: ID
+}
+
+type AssignThreadOutput {
+  thread: Thread
+  error: MutationError
+}
+
+# ---------------------------------------------------------------------------
+# Timeline & events
+# ---------------------------------------------------------------------------
+
+type TimelineEntry {
+  id: ID!
+  timestamp: DateTimePartsOutput!
+  actor: Actor
+  entry: TimelineEntryComponent!
+}
+
+union TimelineEntryComponent =
+    EmailEntry
+  | ChatEntry
+  | CustomEntry
+  | ThreadStatusTransitionedEntry
+  | ThreadLabelsChangedEntry
+
+type EmailEntry {
+  subject: String
+  textContent: String
+}
+
+type ChatEntry {
+  text: String
+}
+
+type CustomEntry {
+  title: String!
+  components: JSON
+}
+
+type ThreadStatusTransitionedEntry {
+  previousStatus: ThreadStatus!
+  nextStatus: ThreadStatus!
+}
+
+type ThreadLabelsChangedEntry {
+  added: [Label!]!
+  removed: [Label!]!
+}
+
+type TimelineEntryConnection {
+  edges: [TimelineEntryEdge!]!
+  pageInfo: PageInfo!
+}
+
+type TimelineEntryEdge {
+  node: TimelineEntry!
+  cursor: String!
+}
+
+input CreateThreadEventInput {
+  threadId: ID!
+  title: String!
+  components: [ComponentInput!]
+  externalId: String
+}
+
+type ThreadEvent {
+  id: ID!
+  title: String!
+  timestamp: DateTimePartsOutput!
+}
+
+type CreateThreadEventOutput {
+  threadEvent: ThreadEvent
+  error: MutationError
+}
+
+input CreateCustomerEventInput {
+  customerId: ID!
+  title: String!
+  components: [ComponentInput!]
+  externalId: String
+}
+
+type CustomerEvent {
+  id: ID!
+  title: String!
+  timestamp: DateTimePartsOutput!
+}
+
+type CreateCustomerEventOutput {
+  customerEvent: CustomerEvent
+  error: MutationError
+}
+
+# ---------------------------------------------------------------------------
+# Messages
+# ---------------------------------------------------------------------------
+
+input ReplyToThreadInput {
+  threadId: ID!
+  textContent: String!
+  markdownContent: String
+}
+
+type ReplyToThreadOutput {
+  thread: Thread
+  error: MutationError
+}
+
+input SendNewEmailInput {
+  customerId: ID!
+  subject: String!
+  textContent: String!
+  markdownContent: String
+}
+
+type SendNewEmailOutput {
+  thread: Thread
+  error: MutationError
+}
+
+# ---------------------------------------------------------------------------
+# Labels & tiers
+# ---------------------------------------------------------------------------
+
+type Label {
+  id: ID!
+  labelType: LabelType!
+}
+
+type LabelType {
+  id: ID!
+  name: String!
+  icon: String
+}
+
+input AddLabelsInput {
+  threadId: ID!
+  labelTypeIds: [ID!]!
+}
+
+type AddLabelsOutput {
+  labels: [Label!]
+  error: MutationError
+}
+
+input RemoveLabelsInput {
+  threadId: ID!
+  labelIds: [ID!]!
+}
+
+type RemoveLabelsOutput {
+  error: MutationError
+}
+
+type Tier {
+  id: ID!
+  name: String!
+  externalId: String
+  memberCount: Int!
+}
+
+type TierConnection {
+  edges: [TierEdge!]!
+  pageInfo: PageInfo!
+}
+
+type TierEdge {
+  node: Tier!
+  cursor: String!
+}
+
+input UpdateCompanyTierInput {
+  companyId: ID!
+  tierId: ID!
+}
+
+type UpdateCompanyTierOutput {
+  error: MutationError
+}
+
+# ---------------------------------------------------------------------------
+# Webhooks
+# ---------------------------------------------------------------------------
+
+type WebhookTarget {
+  id: ID!
+  url: String!
+  isEnabled: Boolean!
+  eventSubscriptions: [WebhookEventSubscription!]!
+  createdAt: DateTimePartsOutput!
+}
+
+type WebhookEventSubscription {
+  id: ID!
+  eventType: String!
+}
+
+type WebhookDeliveryAttempt {
+  id: ID!
+  responseStatusCode: Int
+  succeeded: Boolean!
+  timestamp: DateTimePartsOutput!
+}
+
+input CreateWebhookTargetInput {
+  url: String!
+  eventSubscriptions: [String!]!
+  isEnabled: Boolean
+}
+
+type CreateWebhookTargetOutput {
+  webhookTarget: WebhookTarget
+  error: MutationError
+}
+
+input UpdateWebhookTargetInput {
+  webhookTargetId: ID!
+  url: String
+  isEnabled: Boolean
+  eventSubscriptions: [String!]
+}
+
+type UpdateWebhookTargetOutput {
+  webhookTarget: WebhookTarget
+  error: MutationError
+}
+
+input DeleteWebhookTargetInput {
+  webhookTargetId: ID!
+}
+
+type DeleteWebhookTargetOutput {
+  error: MutationError
+}
+
+# ---------------------------------------------------------------------------
+# Root types
+# ---------------------------------------------------------------------------
+
+type Query {
+  customer(customerId: ID!): Customer
+  customerByEmail(email: String!): Customer
+  customers(first: Int, after: String): CustomerConnection!
+  thread(threadId: ID!): Thread
+  threads(first: Int, after: String): ThreadConnection!
+  threadTimelineEntries(threadId: ID!, first: Int, after: String): TimelineEntryConnection!
+  labelTypes(first: Int, after: String): [LabelType!]!
+  tiers(first: Int, after: String): TierConnection!
+  webhookTargets(first: Int, after: String): [WebhookTarget!]!
+  webhookTarget(webhookTargetId: ID!): WebhookTarget
+}
+
+type Mutation {
+  upsertCustomer(input: UpsertCustomerInput!): UpsertCustomerOutput!
+  deleteCustomer(input: DeleteCustomerInput!): DeleteCustomerOutput!
+  markCustomerAsSpam(input: MarkCustomerAsSpamInput!): MarkCustomerAsSpamOutput!
+  createThread(input: CreateThreadInput!): CreateThreadOutput!
+  updateThread(input: UpdateThreadInput!): UpdateThreadOutput!
+  changeThreadStatus(input: ChangeThreadStatusInput!): ChangeThreadStatusOutput!
+  assignThread(input: AssignThreadInput!): AssignThreadOutput!
+  replyToThread(input: ReplyToThreadInput!): ReplyToThreadOutput!
+  sendNewEmail(input: SendNewEmailInput!): SendNewEmailOutput!
+  createThreadEvent(input: CreateThreadEventInput!): CreateThreadEventOutput!
+  createCustomerEvent(input: CreateCustomerEventInput!): CreateCustomerEventOutput!
+  addLabels(input: AddLabelsInput!): AddLabelsOutput!
+  removeLabels(input: RemoveLabelsInput!): RemoveLabelsOutput!
+  updateCompanyTier(input: UpdateCompanyTierInput!): UpdateCompanyTierOutput!
+  createWebhookTarget(input: CreateWebhookTargetInput!): CreateWebhookTargetOutput!
+  updateWebhookTarget(input: UpdateWebhookTargetInput!): UpdateWebhookTargetOutput!
+  deleteWebhookTarget(input: DeleteWebhookTargetInput!): DeleteWebhookTargetOutput!
+}

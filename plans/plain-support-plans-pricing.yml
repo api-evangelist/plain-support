@@ -1,0 +1,165 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Plain
+providerId: plain-support
+created: '2026-06-20'
+modified: '2026-06-20'
+reconciled: true
+tags:
+- Customer Support
+- Help Desk
+- GraphQL
+- API First
+- Plans
+description: >-
+  Plain prices per seat with monthly credit allowances, and the GraphQL API is
+  available across all plans (the API is the product). Foundation is the entry
+  plan at a flat per-seat rate; Horizon bundles a fixed number of seats plus
+  per-additional-seat pricing and adds SLAs, escalation paths, Help Center, and
+  priority support; Frontier is custom/enterprise with SSO/SCIM, advanced
+  security, and a dedicated CSM. A 7-day free trial (no credit card) is offered.
+notes: >-
+  Per-seat prices and credit allowances as published on the Plain pricing page;
+  verify current numbers at https://www.plain.com/pricing as plans and credit
+  bundles change. API access is not a separately metered product - it is
+  included with every plan.
+sources:
+- https://www.plain.com/pricing
+- https://www.plain.com/docs
+plans:
+- id: plain-foundation
+  name: Foundation
+  type: subscription
+  description: >-
+    Entry plan billed per seat with monthly credits; includes Slack / email /
+    in-app channels, the Ari AI agent, Linear and Jira integrations, customer
+    cards, AI workflows, the Sidekick assistant, and full GraphQL API access.
+  entries:
+  - label: Per Seat
+    name: foundation_seat
+    type: flat
+    metric: seat
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $35 per seat / month
+    userMultiplied: true
+  - label: Monthly Credits
+    name: foundation_credits
+    type: flat
+    metric: credits
+    limit: 2000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: included (2,000 credits / month)
+    userMultiplied: false
+  elements:
+  - name: GraphQL API (full access)
+  - name: Slack / Email / In-App Channels
+  - name: Ari AI Agent
+  - name: Linear and Jira Integrations
+  - name: Customer Cards
+  - name: AI Workflows
+  - name: Sidekick Assistant
+- id: plain-horizon
+  name: Horizon
+  type: subscription
+  description: >-
+    Growth plan bundling 3 seats with per-additional-seat pricing and higher
+    credits; everything in Foundation plus Microsoft Teams, SLAs, escalation
+    paths, Help Center, CRM integrations, reporting themes, suggested
+    responses, and priority support.
+  entries:
+  - label: Base (3 seats)
+    name: horizon_base
+    type: flat
+    metric: subscription
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $299 / month (includes 3 seats)
+    userMultiplied: false
+  - label: Additional Seat
+    name: horizon_additional_seat
+    type: flat
+    metric: seat
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $99 per additional seat / month
+    userMultiplied: true
+  - label: Monthly Credits
+    name: horizon_credits
+    type: flat
+    metric: credits
+    limit: 15000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: included (15,000 credits / month)
+    userMultiplied: false
+  elements:
+  - name: Everything in Foundation
+  - name: Microsoft Teams
+  - name: SLAs
+  - name: Escalation Paths
+  - name: Help Center
+  - name: CRM Integrations
+  - name: Reporting Themes
+  - name: Suggested Responses
+  - name: Priority Support
+- id: plain-frontier
+  name: Frontier
+  type: enterprise
+  description: >-
+    Enterprise plan with custom credits and negotiated terms; everything in
+    Horizon plus Discord channels, custom workspaces, advanced security,
+    SSO/SCIM, a dedicated CSM, and custom AI options. Contact Plain sales.
+  entries:
+  - label: Enterprise Agreement
+    name: frontier
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: custom (contact sales)
+    userMultiplied: false
+  elements:
+  - name: Everything in Horizon
+  - name: Custom Credits
+  - name: Discord Channels
+  - name: Custom Workspaces
+  - name: Advanced Security
+  - name: SSO / SCIM
+  - name: Dedicated CSM
+  - name: Custom AI Options
+- id: plain-trial
+  name: Free Trial
+  type: trial
+  description: >-
+    7-day free trial with no credit card required, providing access to the
+    platform and GraphQL API for evaluation.
+  entries:
+  - label: Trial
+    name: trial
+    type: free
+    metric: days
+    limit: 7
+    timeFrame: day
+    geo: global
+    unit: 1
+    price: free (no credit card)
+    userMultiplied: false
+  elements:
+  - name: Platform Evaluation
+  - name: GraphQL API Access
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

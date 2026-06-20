@@ -1,0 +1,101 @@
+aid: plain-support
+name: Plain
+review:
+  question: Does Plain expose a documented public WebSocket or GraphQL subscriptions API?
+  answer: false
+  date: '2026-06-20'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was created. Plain's public API is a single
+    request/response GraphQL endpoint (POST https://core-api.uk.plain.com/graphql/v1).
+    Its eventing model is outbound HTTP webhooks, not a WebSocket stream,
+    GraphQL subscriptions, or Server-Sent Events. Webhooks are modeled as a
+    sub-API in apis.yml and documented in the GraphQL schema (webhook targets,
+    event subscriptions, delivery attempts), but there is no documented
+    bidirectional or streaming transport to model in AsyncAPI under current
+    API Evangelist scope.
+findings:
+  summary: |
+    Plain is an API-first customer support platform whose entire public API is
+    a single GraphQL endpoint that the Plain UI itself consumes. All operations
+    - customers, threads, timeline entries, messages, labels, tiers, and
+    webhooks - are GraphQL queries and mutations served over HTTP POST to
+    https://core-api.uk.plain.com/graphql/v1 with a Bearer API key
+    (plainApiKey_xxx) issued to a Machine User. Plain does not publish a
+    public WebSocket (ws:// / wss://) endpoint, and GraphQL subscriptions are
+    not part of the documented public API surface. Realtime / push delivery to
+    external systems is handled by outbound webhooks (webhook targets with
+    event-type subscriptions and inspectable delivery attempts), which is a
+    one-way HTTP callback mechanism, not a streaming transport.
+  transports:
+    - protocol: GraphQL-over-HTTP
+      scheme: https
+      baseURL: https://core-api.uk.plain.com/graphql/v1
+      documented: true
+      note: Single POST endpoint serving all queries and mutations.
+    - protocol: Webhooks
+      scheme: https
+      documented: true
+      note: Outbound HTTP callbacks (webhook targets) for thread/customer events. One-way; not a client-facing streaming API.
+    - protocol: GraphQL Subscriptions
+      scheme: wss
+      documented: false
+      note: No GraphQL subscription operations are documented in Plain's public API reference.
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No public WebSocket endpoint is documented by Plain.
+  endpointsConfirmed:
+    - POST https://core-api.uk.plain.com/graphql/v1
+  graphqlOperationsConfirmed:
+    queries:
+      - customer
+      - customerByEmail
+      - customers
+      - thread
+      - threads
+      - threadTimelineEntries
+      - labelTypes
+      - tiers
+      - webhookTargets
+    mutations:
+      - upsertCustomer
+      - deleteCustomer
+      - markCustomerAsSpam
+      - createThread
+      - updateThread
+      - changeThreadStatus
+      - assignThread
+      - replyToThread
+      - sendNewEmail
+      - createThreadEvent
+      - createCustomerEvent
+      - addLabels
+      - removeLabels
+      - updateCompanyTier
+      - createWebhookTarget
+      - updateWebhookTarget
+      - deleteWebhookTarget
+sources:
+  - url: https://www.plain.com/docs/api-reference/graphql/introduction
+    type: APIReference
+    note: Documents the single GraphQL endpoint, Bearer API key auth, and the schema explorer.
+  - url: https://www.plain.com/docs/api-reference/graphql/authentication
+    type: Documentation
+    note: API keys (plainApiKey_) issued to Machine Users with fine-grained permissions, sent as Bearer tokens.
+  - url: https://www.plain.com/docs/graphql/sdk
+    type: Documentation
+    note: '@team-plain/graphql SDK is auto-generated from the GraphQL schema; every query/mutation is available.'
+  - url: https://www.plain.com/pricing
+    type: Documentation
+    note: Per-seat plans (Foundation / Horizon / Frontier) with monthly credits; API included on all plans.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket, GraphQL subscription, or SSE streaming surface is documented,
+    so no AsyncAPI document was authored. The GraphQL surface is captured in
+    graphql/plain-support-graphql.md and graphql/plain-support-schema.graphql,
+    the GraphQL-over-HTTP transport is modeled in openapi/plain-support-openapi.yml,
+    and outbound webhooks are represented as a dedicated sub-API in apis.yml.

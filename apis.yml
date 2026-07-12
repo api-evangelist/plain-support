@@ -151,6 +151,10 @@ apis:
     types to subscribe to, and inspect delivery attempts to drive outbound
     integrations off thread and customer events.
 common:
+- type: DomainSecurity
+  url: security/plain-support-domain-security.yml
+- type: Authentication
+  url: authentication/plain-support-authentication.yml
 - type: GitHubOrganization
   url: https://github.com/team-plain
 - type: LinkedIn
@@ -165,6 +169,8 @@ common:
   url: rate-limits/plain-support-rate-limits.yml
 - type: FinOps
   url: finops/plain-support-finops.yml
+- url: https://www.plain.com/blog
+  type: Blog
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

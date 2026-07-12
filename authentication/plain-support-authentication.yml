@@ -1,0 +1,14 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/plain-support-openapi.yml
+summary:
+  types:
+  - http
+schemes:
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  description: 'Plain API key issued to a Machine User, sent as a Bearer token: `Authorization:
+    Bearer plainApiKey_xxx`.'
+  sources:
+  - openapi/plain-support-openapi.yml

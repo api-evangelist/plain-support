@@ -151,6 +151,8 @@ apis:
     types to subscribe to, and inspect delivery attempts to drive outbound
     integrations off thread and customer events.
 common:
+- type: AgenticAccess
+  url: agentic-access/plain-support-agentic-access.yml
 - type: DomainSecurity
   url: security/plain-support-domain-security.yml
 - type: Authentication

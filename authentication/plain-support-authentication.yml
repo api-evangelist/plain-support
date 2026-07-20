@@ -9,6 +9,6 @@ schemes:
   type: http
   scheme: bearer
   description: 'Plain API key issued to a Machine User, sent as a Bearer token: `Authorization:
-    Bearer plainApiKey_xxx`.'
+    Bearer [example key]`.'
   sources:
   - openapi/plain-support-openapi.yml

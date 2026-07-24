@@ -1,0 +1,149 @@
+openapi: 3.0.1
+info:
+  title: Plain GraphQL API
+  description: 'Plain is an API-first customer support platform exposing a single GraphQL endpoint over HTTP. This OpenAPI document models the GraphQL-over-HTTP transport: a single POST /graphql/v1 operation that accepts a GraphQL `query` (or mutation) and optional `variables`, authenticated with a Bearer API key. The full operation surface (customers, threads, timeline, messages, labels, tiers, webhooks) is defined by the GraphQL schema, not by REST paths - see graphql/plain-support-schema.graphql.'
+  termsOfService: https://www.plain.com/legal/terms-of-service
+  contact:
+    name: Plain Support
+    url: https://www.plain.com/docs
+  version: v1
+servers:
+- url: https://core-api.uk.plain.com
+  description: Plain core API (UK region)
+tags:
+- name: GraphQL
+paths:
+  /graphql/v1:
+    post:
+      operationId: executeGraphQL
+      tags:
+      - GraphQL
+      summary: Execute a GraphQL query or mutation
+      description: Executes a single GraphQL operation against Plain's API. The request body carries a GraphQL `query` string (which may contain a query or a mutation), an optional `variables` object, and an optional `operationName`. Mutations return their result and a typed `error` field in the GraphQL response data; transport- and schema-level problems are returned in the top-level `errors` array. Always returns HTTP 200 for well-formed GraphQL requests, including those whose operation produced a GraphQL error.
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GraphQLRequest'
+            examples:
+              upsertCustomer:
+                summary: Upsert a customer
+                value:
+                  query: "mutation upsertCustomer($input: UpsertCustomerInput!) {\n  upsertCustomer(input: $input) {\n    result\n    customer { id fullName }\n    error { message type code }\n  }\n}"
+                  variables:
+                    input:
+                      identifier:
+                        emailAddress: ada@example.com
+                      onCreate:
+                        fullName: Ada Lovelace
+                        email:
+                          email: ada@example.com
+                          isVerified: true
+                      onUpdate:
+                        fullName:
+                          value: Ada Lovelace
+              createThread:
+                summary: Create a thread
+                value:
+                  query: "mutation createThread($input: CreateThreadInput!) {\n  createThread(input: $input) {\n    thread { id title status }\n    error { message type code }\n  }\n}"
+                  variables:
+                    input:
+                      customerIdentifier:
+                        emailAddress: ada@example.com
+                      title: Cannot reset password
+                      components:
+                      - componentText:
+                          text: I am locked out of my account.
+              replyToThread:
+                summary: Reply to a thread
+                value:
+                  query: "mutation replyToThread($input: ReplyToThreadInput!) {\n  replyToThread(input: $input) {\n    thread { id }\n    error { message type code }\n  }\n}"
+                  variables:
+                    input:
+                      threadId: th_01HXXXXXXXXXXXXXXXXXXXXXXX
+                      textContent: We have sent you a password reset link.
+      responses:
+        '200':
+          description: A GraphQL response. `data` holds the result of the operation; `errors` holds any transport- or schema-level errors. Note that mutation-level (business) errors are returned inside `data` on the operation's typed `error` field, not in top-level `errors`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraphQLResponse'
+        '400':
+          description: Malformed request (invalid JSON or missing query).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraphQLResponse'
+        '401':
+          description: Missing or invalid API key.
+        '403':
+          description: API key lacks a required fine-grained permission.
+        '429':
+          description: Rate limit exceeded.
+components:
+  schemas:
+    GraphQLResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          nullable: true
+          additionalProperties: true
+          description: The data returned by the executed operation.
+        errors:
+          type: array
+          nullable: true
+          description: Transport- or schema-level GraphQL errors.
+          items:
+            $ref: '#/components/schemas/GraphQLError'
+        extensions:
+          type: object
+          nullable: true
+          additionalProperties: true
+    GraphQLRequest:
+      type: object
+      required:
+      - query
+      properties:
+        query:
+          type: string
+          description: The GraphQL query or mutation document.
+        operationName:
+          type: string
+          nullable: true
+          description: Name of the operation to run when the document defines several.
+        variables:
+          type: object
+          nullable: true
+          additionalProperties: true
+          description: Key/value map of variables referenced by the query.
+    GraphQLError:
+      type: object
+      properties:
+        message:
+          type: string
+        path:
+          type: array
+          items:
+            type: string
+        locations:
+          type: array
+          items:
+            type: object
+            properties:
+              line:
+                type: integer
+              column:
+                type: integer
+        extensions:
+          type: object
+          additionalProperties: true
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Plain API key issued to a Machine User, sent as a Bearer token: `Authorization: Bearer plainApiKey_xxx`.'

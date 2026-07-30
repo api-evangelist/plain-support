@@ -7,7 +7,20 @@ description: Plain is an API-first customer support platform built around a sing
   messages, labels, tiers, and webhooks - is exposed through the same GraphQL endpoint
   the Plain UI consumes, letting teams build support into their own products with
   threads, customer context, and a unified timeline.
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: freemium
+  onboarding: open
+  trial: true
+  try_now: true
+  public: true
+  label: Freemium (free trial) · Open access
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/plain-support.png
 tags:
 - Customer Support
 - Help Desk
@@ -19,137 +32,32 @@ created: '2026-06-20'
 modified: '2026-06-20'
 specificationVersion: '0.19'
 apis:
-- aid: plain-support:plain-customers-api
-  name: Plain Customers API
-  tags:
-  - Customers
-  - Identity
-  - GraphQL
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+- aid: plain-support:plain-support-graphql-api
+  name: Plain GraphQL API
+  description: The GraphQL API from Plain — 1 operation(s) for graphql.
   humanURL: https://www.plain.com/docs/api-reference/graphql/customers/upserting-customers
   baseURL: https://core-api.uk.plain.com/graphql/v1
-  properties:
-  - url: graphql/plain-support-graphql.md
-    type: GraphQL
-  - url: https://www.plain.com/docs/api-reference/graphql/customers/upserting-customers
-    type: Documentation
-  - url: https://www.plain.com/docs/api-reference/graphql/introduction
-    type: APIReference
-  - url: openapi/plain-support-openapi.yml
-    type: OpenAPI
-  description: Create, update, fetch, and manage customers and customer groups via
-    GraphQL. Idempotent upsertCustomer with onCreate / onUpdate semantics keyed on
-    an external id or email, plus customer events and spam controls.
-- aid: plain-support:plain-threads-api
-  name: Plain Threads API
   tags:
-  - Threads
-  - Tickets
-  - Conversations
   - GraphQL
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://www.plain.com/docs/api-reference/graphql/threads/create-threads
-  baseURL: https://core-api.uk.plain.com/graphql/v1
   properties:
-  - url: graphql/plain-support-graphql.md
-    type: GraphQL
-  - url: https://www.plain.com/docs/api-reference/graphql/threads/create-threads
-    type: Documentation
-  - url: https://www.plain.com/docs/api-reference/graphql/introduction
-    type: APIReference
-  - url: openapi/plain-support-openapi.yml
-    type: OpenAPI
-  description: Create, fetch, update, assign, escalate, and change the status of
-    threads - Plain's unit of support work - plus thread fields, autoresponders,
-    and thread import for backfilling history.
-- aid: plain-support:plain-timeline-api
-  name: Plain Timeline & Events API
-  tags:
-  - Timeline
-  - Events
-  - Timeline Entries
-  - GraphQL
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://www.plain.com/docs/api-reference/graphql/events/create-a-thread-event
-  baseURL: https://core-api.uk.plain.com/graphql/v1
-  properties:
-  - url: graphql/plain-support-graphql.md
-    type: GraphQL
-  - url: https://www.plain.com/docs/api-reference/graphql/events/create-a-thread-event
-    type: Documentation
-  - url: https://www.plain.com/docs/api-reference/graphql/introduction
-    type: APIReference
-  - url: openapi/plain-support-openapi.yml
-    type: OpenAPI
-  description: Read a thread's chronological timeline and append custom customer and
-    thread events. Timeline entries unify messages, status changes, label changes,
-    and your own structured events into one feed of context.
-- aid: plain-support:plain-messages-api
-  name: Plain Messages API
-  tags:
-  - Messages
-  - Replies
-  - Email
-  - GraphQL
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://www.plain.com/docs/api-reference/graphql/messages/reply-to-threads
-  baseURL: https://core-api.uk.plain.com/graphql/v1
-  properties:
-  - url: graphql/plain-support-graphql.md
-    type: GraphQL
-  - url: https://www.plain.com/docs/api-reference/graphql/messages/reply-to-threads
-    type: Documentation
-  - url: https://www.plain.com/docs/api-reference/graphql/introduction
-    type: APIReference
-  - url: openapi/plain-support-openapi.yml
-    type: OpenAPI
-  description: Reply to threads and emails, send new outbound emails, and surface
-    AI suggested replies. Messages are appended to the thread timeline and delivered
-    over the customer's channel (email, Slack, in-app, etc.).
-- aid: plain-support:plain-labels-tiers-api
-  name: Plain Labels & Tiers API
-  tags:
-  - Labels
-  - Tiers
-  - SLAs
-  - GraphQL
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://www.plain.com/docs/api-reference/graphql/labels/add-labels
-  baseURL: https://core-api.uk.plain.com/graphql/v1
-  properties:
-  - url: graphql/plain-support-graphql.md
-    type: GraphQL
-  - url: https://www.plain.com/docs/api-reference/graphql/labels/add-labels
-    type: Documentation
-  - url: https://www.plain.com/docs/api-reference/graphql/introduction
-    type: APIReference
-  - url: openapi/plain-support-openapi.yml
-    type: OpenAPI
-  description: Add and remove labels on threads, manage label types, and assign
-    companies and tenants to tiers that drive SLAs and prioritization across the
-    support workflow.
-- aid: plain-support:plain-webhooks-api
-  name: Plain Webhooks API
-  tags:
-  - Webhooks
-  - Events
-  - Integrations
-  - GraphQL
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://www.plain.com/docs/api-reference/graphql/webhooks/create-a-webhook-target
-  baseURL: https://core-api.uk.plain.com/graphql/v1
-  properties:
-  - url: graphql/plain-support-graphql.md
-    type: GraphQL
-  - url: https://www.plain.com/docs/api-reference/graphql/webhooks/create-a-webhook-target
-    type: Documentation
-  - url: https://www.plain.com/docs/api-reference/graphql/introduction
-    type: APIReference
-  - url: openapi/plain-support-openapi.yml
-    type: OpenAPI
-  description: Create, fetch, update, and delete webhook targets, choose which event
-    types to subscribe to, and inspect delivery attempts to drive outbound
-    integrations off thread and customer events.
+  - type: OpenAPI
+    url: openapi/plain-support-graphql-api-openapi.yml
+  - type: GraphQL
+    url: graphql/plain-support-graphql.md
+  - type: Documentation
+    url: https://www.plain.com/docs/api-reference/graphql/customers/upserting-customers
+  - type: APIReference
+    url: https://www.plain.com/docs/api-reference/graphql/introduction
+  - type: Documentation
+    url: https://www.plain.com/docs/api-reference/graphql/threads/create-threads
+  - type: Documentation
+    url: https://www.plain.com/docs/api-reference/graphql/events/create-a-thread-event
+  - type: Documentation
+    url: https://www.plain.com/docs/api-reference/graphql/messages/reply-to-threads
+  - type: Documentation
+    url: https://www.plain.com/docs/api-reference/graphql/labels/add-labels
+  - type: Documentation
+    url: https://www.plain.com/docs/api-reference/graphql/webhooks/create-a-webhook-target
 common:
 - type: AgenticAccess
   url: agentic-access/plain-support-agentic-access.yml

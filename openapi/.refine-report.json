@@ -1,0 +1,14 @@
+{
+  "provider": "plain-support",
+  "sources": [
+    "plain-support-graphql-api-openapi.yml"
+  ],
+  "outputs": [
+    "plain-support-graphql-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

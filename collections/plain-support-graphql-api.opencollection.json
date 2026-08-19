@@ -1,0 +1,37 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Plain GraphQL API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "GraphQL",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Execute a GraphQL query or mutation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core-api.uk.plain.com/graphql/v1",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Executes a single GraphQL operation against Plain's API. The request body carries a GraphQL `query` string (which may contain a query or a mutation), an optional `variables` object, and an optional `operationName`. Mutations return their result and a typed `error` field in the GraphQL response data; transport- and schema-level problems are returned in the top-level `errors` array. Always returns HTTP 200 for well-formed GraphQL requests, including those whose operation produced a GraphQL error."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

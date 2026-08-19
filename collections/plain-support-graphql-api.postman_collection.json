@@ -1,0 +1,337 @@
+{
+  "item": [
+    {
+      "id": "138932e6-e110-4b25-8c16-f2966a1d3a5a",
+      "name": "GraphQL",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "888ae5e0-4d3e-4f71-8f10-89db04c45b84",
+          "name": "Execute a GraphQL query or mutation",
+          "request": {
+            "name": "Execute a GraphQL query or mutation",
+            "description": {
+              "content": "Executes a single GraphQL operation against Plain's API. The request body carries a GraphQL `query` string (which may contain a query or a mutation), an optional `variables` object, and an optional `operationName`. Mutations return their result and a typed `error` field in the GraphQL response data; transport- and schema-level problems are returned in the top-level `errors` array. Always returns HTTP 200 for well-formed GraphQL requests, including those whose operation produced a GraphQL error.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "graphql",
+                "v1"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"<string>\",\n  \"operationName\": \"<string>\",\n  \"variables\": {\n    \"key_0\": \"string\",\n    \"key_1\": false\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "5e70825a-8896-4756-9c28-d608bd2b9924",
+              "name": "A GraphQL response. `data` holds the result of the operation; `errors` holds any transport- or schema-level errors. Note that mutation-level (business) errors are returned inside `data` on the operation's typed `error` field, not in top-level `errors`.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "graphql",
+                    "v1"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"mutation upsertCustomer($input: UpsertCustomerInput!) {\\n  upsertCustomer(input: $input) {\\n    result\\n    customer { id fullName }\\n    error { message type code }\\n  }\\n}\",\n  \"variables\": {\n    \"input\": {\n      \"identifier\": {\n        \"emailAddress\": \"ada@example.com\"\n      },\n      \"onCreate\": {\n        \"fullName\": \"Ada Lovelace\",\n        \"email\": {\n          \"email\": \"ada@example.com\",\n          \"isVerified\": true\n        }\n      },\n      \"onUpdate\": {\n        \"fullName\": {\n          \"value\": \"Ada Lovelace\"\n        }\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"key_0\": 8088,\n    \"key_1\": 2994\n  },\n  \"errors\": [\n    {\n      \"message\": \"string\",\n      \"path\": [\n        \"string\",\n        \"string\"\n      ],\n      \"locations\": [\n        {\n          \"line\": 8646,\n          \"column\": 7689\n        },\n        {\n          \"line\": 4160,\n          \"column\": 3619\n        }\n      ],\n      \"extensions\": {\n        \"key_0\": \"string\"\n      }\n    },\n    {\n      \"message\": \"string\",\n      \"path\": [\n        \"string\",\n        \"string\"\n      ],\n      \"locations\": [\n        {\n          \"line\": 7472,\n          \"column\": 28\n        },\n        {\n          \"line\": 9634,\n          \"column\": 6583\n        }\n      ],\n      \"extensions\": {\n        \"key_0\": true,\n        \"key_1\": \"string\"\n      }\n    }\n  ],\n  \"extensions\": {\n    \"key_0\": false\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "31cbe20b-d30d-40e8-a73e-278dd24bba14",
+              "name": "Malformed request (invalid JSON or missing query).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "graphql",
+                    "v1"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"mutation upsertCustomer($input: UpsertCustomerInput!) {\\n  upsertCustomer(input: $input) {\\n    result\\n    customer { id fullName }\\n    error { message type code }\\n  }\\n}\",\n  \"variables\": {\n    \"input\": {\n      \"identifier\": {\n        \"emailAddress\": \"ada@example.com\"\n      },\n      \"onCreate\": {\n        \"fullName\": \"Ada Lovelace\",\n        \"email\": {\n          \"email\": \"ada@example.com\",\n          \"isVerified\": true\n        }\n      },\n      \"onUpdate\": {\n        \"fullName\": {\n          \"value\": \"Ada Lovelace\"\n        }\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"key_0\": 9130.003134288498,\n    \"key_1\": 2592.474737423813,\n    \"key_2\": \"string\"\n  },\n  \"errors\": [\n    {\n      \"message\": \"string\",\n      \"path\": [\n        \"string\",\n        \"string\"\n      ],\n      \"locations\": [\n        {\n          \"line\": 9771,\n          \"column\": 4449\n        },\n        {\n          \"line\": 1836,\n          \"column\": 2190\n        }\n      ],\n      \"extensions\": {\n        \"key_0\": true,\n        \"key_1\": true\n      }\n    },\n    {\n      \"message\": \"string\",\n      \"path\": [\n        \"string\",\n        \"string\"\n      ],\n      \"locations\": [\n        {\n          \"line\": 5018,\n          \"column\": 9151\n        },\n        {\n          \"line\": 5000,\n          \"column\": 2603\n        }\n      ],\n      \"extensions\": {\n        \"key_0\": \"string\",\n        \"key_1\": 4670.375282101881,\n        \"key_2\": false,\n        \"key_3\": true\n      }\n    }\n  ],\n  \"extensions\": {\n    \"key_0\": true,\n    \"key_1\": 4969\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b96d77f3-c098-4047-8067-1b429a848460",
+              "name": "Missing or invalid API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "graphql",
+                    "v1"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"mutation upsertCustomer($input: UpsertCustomerInput!) {\\n  upsertCustomer(input: $input) {\\n    result\\n    customer { id fullName }\\n    error { message type code }\\n  }\\n}\",\n  \"variables\": {\n    \"input\": {\n      \"identifier\": {\n        \"emailAddress\": \"ada@example.com\"\n      },\n      \"onCreate\": {\n        \"fullName\": \"Ada Lovelace\",\n        \"email\": {\n          \"email\": \"ada@example.com\",\n          \"isVerified\": true\n        }\n      },\n      \"onUpdate\": {\n        \"fullName\": {\n          \"value\": \"Ada Lovelace\"\n        }\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "cf39e760-86cd-444d-a756-f0459b335f25",
+              "name": "API key lacks a required fine-grained permission.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "graphql",
+                    "v1"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"mutation upsertCustomer($input: UpsertCustomerInput!) {\\n  upsertCustomer(input: $input) {\\n    result\\n    customer { id fullName }\\n    error { message type code }\\n  }\\n}\",\n  \"variables\": {\n    \"input\": {\n      \"identifier\": {\n        \"emailAddress\": \"ada@example.com\"\n      },\n      \"onCreate\": {\n        \"fullName\": \"Ada Lovelace\",\n        \"email\": {\n          \"email\": \"ada@example.com\",\n          \"isVerified\": true\n        }\n      },\n      \"onUpdate\": {\n        \"fullName\": {\n          \"value\": \"Ada Lovelace\"\n        }\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "79c1053c-035c-485a-bf74-28225f405d96",
+              "name": "Rate limit exceeded.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "graphql",
+                    "v1"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"mutation upsertCustomer($input: UpsertCustomerInput!) {\\n  upsertCustomer(input: $input) {\\n    result\\n    customer { id fullName }\\n    error { message type code }\\n  }\\n}\",\n  \"variables\": {\n    \"input\": {\n      \"identifier\": {\n        \"emailAddress\": \"ada@example.com\"\n      },\n      \"onCreate\": {\n        \"fullName\": \"Ada Lovelace\",\n        \"email\": {\n          \"email\": \"ada@example.com\",\n          \"isVerified\": true\n        }\n      },\n      \"onUpdate\": {\n        \"fullName\": {\n          \"value\": \"Ada Lovelace\"\n        }\n      }\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://core-api.uk.plain.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "cc6f58a3-583b-4fb2-a2da-e4337c52af39",
+    "name": "Plain GraphQL API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Plain is an API-first customer support platform exposing a single GraphQL endpoint over HTTP. This OpenAPI document models the GraphQL-over-HTTP transport: a single POST /graphql/v1 operation that accepts a GraphQL `query` (or mutation) and optional `variables`, authenticated with a Bearer API key. The full operation surface (customers, threads, timeline, messages, labels, tiers, webhooks) is defined by the GraphQL schema, not by REST paths - see graphql/plain-support-schema.graphql.\n\nContact Support:\n Name: Plain Support",
+      "type": "text/plain"
+    }
+  }
+}

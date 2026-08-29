@@ -7,6 +7,18 @@ description: Plain is an API-first customer support platform built around a sing
   messages, labels, tiers, and webhooks - is exposed through the same GraphQL endpoint
   the Plain UI consumes, letting teams build support into their own products with
   threads, customer context, and a unified timeline.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: freemium
   onboarding: open

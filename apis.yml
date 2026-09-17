@@ -51,16 +51,16 @@ created: '2026-06-20'
 modified: '2026-06-20'
 specificationVersion: '0.23'
 apis:
-- aid: plain-support:plain-support-graphql-api
-  name: Plain GraphQL API
-  description: The GraphQL API from Plain — 1 operation(s) for graphql.
+- aid: plain-support:plain-support-graph-ql-api
+  name: Plain Graph QL API
+  description: The Graph QL API from Plain — 1 operation(s) for graph ql.
   humanURL: https://www.plain.com/docs/api-reference/graphql/customers/upserting-customers
   baseURL: https://core-api.uk.plain.com/graphql/v1
   tags:
-  - GraphQL
+  - Graph QL
   properties:
   - type: OpenAPI
-    url: openapi/plain-support-graphql-api-openapi.yml
+    url: openapi/plain-support-graph-ql-api-openapi.yml
   - type: GraphQL
     url: graphql/plain-support-graphql.md
   - type: Documentation

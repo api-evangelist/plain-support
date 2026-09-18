@@ -1,6 +1,6 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Plain GraphQL API
+  title: Plain Graph QL API
   description: 'Plain is an API-first customer support platform exposing a single GraphQL endpoint over HTTP. This OpenAPI document models the GraphQL-over-HTTP transport: a single POST /graphql/v1 operation that accepts a GraphQL `query` (or mutation) and optional `variables`, authenticated with a Bearer API key. The full operation surface (customers, threads, timeline, messages, labels, tiers, webhooks) is defined by the GraphQL schema, not by REST paths - see graphql/plain-support-schema.graphql.'
   termsOfService: https://www.plain.com/legal/terms-of-service
   contact:
@@ -11,13 +11,13 @@ servers:
 - url: https://core-api.uk.plain.com
   description: Plain core API (UK region)
 tags:
-- name: GraphQL
+- name: Graph QL
 paths:
   /graphql/v1:
     post:
       operationId: executeGraphQL
       tags:
-      - GraphQL
+      - Graph QL
       summary: Execute a GraphQL query or mutation
       description: Executes a single GraphQL operation against Plain's API. The request body carries a GraphQL `query` string (which may contain a query or a mutation), an optional `variables` object, and an optional `operationName`. Mutations return their result and a typed `error` field in the GraphQL response data; transport- and schema-level problems are returned in the top-level `errors` array. Always returns HTTP 200 for well-formed GraphQL requests, including those whose operation produced a GraphQL error.
       security:
@@ -86,41 +86,6 @@ paths:
           description: Rate limit exceeded.
 components:
   schemas:
-    GraphQLResponse:
-      type: object
-      properties:
-        data:
-          type: object
-          nullable: true
-          additionalProperties: true
-          description: The data returned by the executed operation.
-        errors:
-          type: array
-          nullable: true
-          description: Transport- or schema-level GraphQL errors.
-          items:
-            $ref: '#/components/schemas/GraphQLError'
-        extensions:
-          type: object
-          nullable: true
-          additionalProperties: true
-    GraphQLRequest:
-      type: object
-      required:
-      - query
-      properties:
-        query:
-          type: string
-          description: The GraphQL query or mutation document.
-        operationName:
-          type: string
-          nullable: true
-          description: Name of the operation to run when the document defines several.
-        variables:
-          type: object
-          nullable: true
-          additionalProperties: true
-          description: Key/value map of variables referenced by the query.
     GraphQLError:
       type: object
       properties:
@@ -142,6 +107,46 @@ components:
         extensions:
           type: object
           additionalProperties: true
+    GraphQLResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          description: The data returned by the executed operation.
+        errors:
+          type:
+          - array
+          - 'null'
+          description: Transport- or schema-level GraphQL errors.
+          items:
+            $ref: '#/components/schemas/GraphQLError'
+        extensions:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+    GraphQLRequest:
+      type: object
+      required:
+      - query
+      properties:
+        query:
+          type: string
+          description: The GraphQL query or mutation document.
+        operationName:
+          type:
+          - string
+          - 'null'
+          description: Name of the operation to run when the document defines several.
+        variables:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          description: Key/value map of variables referenced by the query.
   securitySchemes:
     bearerAuth:
       type: http

@@ -57,6 +57,8 @@ apis:
   humanURL: https://www.plain.com/docs/api-reference/graphql/customers/upserting-customers
   baseURL: https://core-api.uk.plain.com/graphql/v1
   tags:
+  - GraphQL
+  tags_raw:
   - Graph QL
   properties:
   - type: OpenAPI
